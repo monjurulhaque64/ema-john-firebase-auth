@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import './SingUp.css'
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../providers/AuthProvider';
 
 const SingUp = () => {
 
     const [error, setError]= useState('');
+    const {createUser} = useContext(AuthContext);
 
     const handleSingUp = event =>{
         event.preventDefault();
@@ -14,6 +16,8 @@ const SingUp = () => {
         const confirmPass = form.confirm.value;
         console.log(email, pass, confirmPass)
 
+        setError('');
+
         if(pass !== confirmPass){
             setError('Your Pass Didnt match')
             return;
@@ -22,6 +26,15 @@ const SingUp = () => {
             setError('Please Give 6 digit password')
             return;
         }
+        createUser(email , pass)
+        .then(result =>{
+            const loggedUser = result.user;
+            console.log(loggedUser);
+        })
+        .catch((error)=>{
+            console.log(error);
+            setError(error.message)
+        })
 
     }
     return (
